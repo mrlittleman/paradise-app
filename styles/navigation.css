@@ -1,0 +1,74 @@
+body.dark-mode button {
+    font-size: 14px;
+    background-color: #111; /* Dark background for buttons */
+    border-radius: 20px;
+    color: #fff; /* White text color */
+}
+
+body.dark-mode button:hover {
+    background-color: #333; /* Slightly lighter background on hover */
+}
+
+.dark-mode-toggle{
+
+    font-size: 14px;
+    border:none;
+    padding:8px 8px;
+}
+
+
+.dropdown-column {
+    max-width: 300px;
+    margin: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.dropdown-column h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #2e7d32; /* Dark Green */
+}
+
+.styled-select {
+    width: 100%;
+    padding: 10px 15px;
+    font-size: 16px;
+    border: 2px solid #2e7d32; /* Dark Green Border */
+    border-radius: 5px;
+    background-color: #e8f5e9; /* Light Green Background */
+    color: #2e7d32; /* Dark Green Text */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+body.dark-mode .styled-select{
+    background-color: #333;
+}
+
+
+
+.styled-select:hover {
+    border-color: #1b5e20; /* Darker Green on Hover */
+    box-shadow: 0 0 5px rgba(0, 128, 0, 0.3); /* Green Shadow on Hover */
+}
+
+.styled-select option {
+    padding: 10px;
+    background-color: #ffffff; /* Option Background */
+    color: #2e7d32; /* Option Text Color */
+}
+.styled-select option:hover{
+    background-color: #333;
+
+}
+
+select option:hover {
+    background-color: lightgray; /* Choose your desired gray color */
+}
+.styled-select:focus {
+    outline: none;
+    border-color: #1b5e20; /* Darker Green on Focus */
+    box-shadow: 0 0 5px rgba(0, 128, 0, 0.5); /* Green Shadow on Focus */
+}

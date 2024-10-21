@@ -1,0 +1,39 @@
+
+.job-postings-container {
+    margin-left: 2rem;
+    width: 75rem;
+    display: grid; 
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 1rem; 
+}
+
+.card-forms {
+    /* background: rgba(0, 0, 0, 0.1);  */
+    margin-top: 3rem;
+    padding-left: 1rem;
+    padding: 1rem; 
+    transition: box-shadow 0.3s ease; 
+}
+
+body.dark-mode  .card-forms:hover {
+    box-shadow: 0 8px 20px rgba(0, 195, 0, 0.7); 
+}
+.card-forms:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
+}
+
+.card-forms h2 {
+    color: #00c300; 
+}
+
+body.light-mode .card-forms h2 {
+    color: #005700; 
+}
+
+body.light-mode .card-forms p {
+    color: black; 
+}
+
+body.dark-mode .card-forms p {
+    color: white; 
+}
