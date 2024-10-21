@@ -26,297 +26,253 @@ if (isset($_GET['id'])) {
 $conn->close();
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./styles/job-details.css">
-    <title>Job Details</title>
-    <style>
-        /* General styles */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
+<style>
+    /* General modal styling */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+        animation: fadeIn 0.3s ease-in-out;
+    }
 
-        .job-details-container {
-            margin: 3rem 10rem;
-        }
+    .modal-content {
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 2rem;
+        max-width: 600px;
+        width: 100%;
+        margin: auto;
+        text-align: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        animation: slideDown 0.3s ease-in-out;
+    }
 
-        .job-details-container h1 {
-            color: #28a745;
-        }
+    .modal h2 {
+        color: #333;
+        margin-bottom: 1rem;
+    }
 
-        .button-contents {
-            margin-top: 2rem;
-        }
+    /* Form-specific styling */
+    .form-group {
+        margin-bottom: 1rem;
+    }
 
-        .button-contents button {
-            margin-right: 2rem;
-            padding: 0.5rem 1rem;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
+    .form-group label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+        text-align: left;
+    }
 
-        .button-contents button:hover {
-            opacity: 0.9;
-        }
+    .form-group input, .form-group textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 1rem;
+    }
 
-        /* Modal Styles */
-        .modal {
-            display: none; /* Hidden by default */
-            position: fixed; /* Stay in place */
-            z-index: 1000; /* Sit on top */
-            left: 0;
-            top: 0;
-            width: 100%; /* Full width */
-            height: 100%; /* Full height */
-            background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
-            justify-content: center; /* Center the modal */
-            align-items: center; /* Center the modal */
-        }
+    .form-group textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
 
-        .modal-content {
-            background-color: #fff; /* White background */
-            border-radius: 10px; /* Rounded corners */
-            padding: 2rem; /* Padding */
-            max-width: 600px; /* Max width */
-            width: 90%; /* Responsive width */
-            text-align: center; /* Center text */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow */
-            animation: slideDown 0.3s ease-in-out; /* Animation */
-        }
+    /* Centered modal button layout */
+    .modal-buttons {
+        margin-top: 1.5rem;
+        display: flex;
+        justify-content: center; /* Center the buttons */
+        gap: 1rem;
+    }
 
-        .modal h2 {
-            color: #333; /* Dark text color */
-            margin-bottom: 1rem; /* Margin bottom */
-        }
+    .modal-buttons button {
+        padding: 0.75rem 1.5rem;
+        border-radius: 4px;
+        border: none;
+        font-size: 1rem;
+        cursor: pointer;
+    }
 
-        .modal p {
-            margin-bottom: 1.5rem; /* Margin bottom */
-        }
+    .modal button.cancel-btn {
+        background-color: #ccc;
+        color: #333;
+    }
 
-        .modal button {
-            padding: 0.75rem 1.5rem; /* Button padding */
-            margin: 0.5rem; /* Button margin */
-            border-radius: 4px; /* Rounded corners */
-            border: none; /* No border */
-            font-size: 1rem; /* Font size */
-            cursor: pointer; /* Pointer cursor */
-            background-color: #28a745; /* Button color */
-            color: white; /* Text color */
-        }
+    .modal button.confirm-btn {
+        background-color: #2ecc71;
+        color: #fff;
+    }
 
-        .modal button.cancel-btn {
-            background-color: #ccc; /* Cancel button color */
-            color: #333; /* Cancel button text color */
-        }
+    .modal button:hover {
+        opacity: 0.9;
+    }
+    .job-details-container h1{
+        color: #2e7d32;
+    }
+    .job-details-container {
+        margin-left: 5rem;
+        margin-right: 5rem;
+        margin-bottom: 6rem;
+    }
+    .job-details-container button {
+        margin-right: 1rem;
+    }
 
-        .modal button:hover {
-            opacity: 0.9; /* Hover effect */
-        }
 
-        .close {
-            position: absolute; /* Positioning */
-            top: 1rem; /* Top position */
-            right: 1rem; /* Right position */
-            font-size: 1.5rem; /* Font size */
-            cursor: pointer; /* Pointer cursor */
-            color: #999; /* Close button color */
-        }
+    /* Animation for modal fade and slide */
+    @keyframes fadeIn {
+        from {opacity: 0;}
+        to {opacity: 1;}
+    }
 
-        /* Animation for modal fade and slide */
-        @keyframes slideDown {
-            from { transform: translateY(-10px); }
-            to { transform: translateY(0); }
-        }
-    </style>
-</head>
-<body>
-    <main>
-        <div class="job-details-container">
-            <?php if (isset($job)): ?>
-                <h1 id="job-title"><?php echo htmlspecialchars($job["job_title"]); ?></h1>
-                <p id="job-date">Date: <?php echo htmlspecialchars($job["date"]); ?></p>
-                <p id="job-short-desc"><?php echo htmlspecialchars($job["job_short_desc"]); ?></p>
-                <p id="job-desc"><?php echo nl2br(htmlspecialchars($job["job_desc"])); ?></p>
-            <?php else: ?>
-                <p><?php echo $message; ?></p>
-            <?php endif; ?>
-            
-            <div class="button-contents">
-                <button onclick="openEditModal()">Edit</button>
-                <button onclick="openDeleteModal()">Delete</button>
-                <button onclick="openApplyModal()">Apply</button>
-            </div>
+    @keyframes slideDown {
+        from {transform: translateY(-10px);}
+        to {transform: translateY(0);}
+    }
+</style>
 
-            <!-- Separate Edit Form -->
-            <div id="editFormContainer" style="display: none;">
-                <h2>Edit Job Details</h2>
-                <form id="editForm">
-                    <input type="hidden" name="job_id" value="<?php echo $jobId; ?>">
+<main>
+    <div class="job-details-container">
+        <?php if (isset($job)): ?>
+            <h1 id="job-title"><?php echo htmlspecialchars($job["job_title"]); ?></h1>
+            <p id="job-date">Date: <?php echo htmlspecialchars($job["date"]); ?></p>
+            <p id="job-short-desc"><?php echo htmlspecialchars($job["job_short_desc"]); ?></p>
+            <p id="job-desc"><?php echo nl2br(htmlspecialchars($job["job_desc"])); ?></p>
+        <?php else: ?>
+            <p><?php echo $message; ?></p>
+        <?php endif; ?>
+        
+        <div class="button-contents">
+            <button onclick="openEditModal()">Edit</button>
+            <button onclick="openDeleteModal()">Delete</button>
+            <button onclick="openApplyModal()">Apply</button>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <h2>Edit Job Details</h2>
+            <form id="editForm">
+                <input type="hidden" name="job_id" value="<?php echo $jobId; ?>">
+
+                <div class="form-group">
                     <label for="job_title">Job Title:</label>
                     <input type="text" id="job_title_input" name="job_title" value="<?php echo htmlspecialchars($job["job_title"]); ?>" required>
-                    
+                </div>
+
+                <div class="form-group">
                     <label for="job_short_desc">Short Description:</label>
                     <textarea id="job_short_desc_input" name="job_short_desc" required><?php echo htmlspecialchars($job["job_short_desc"]); ?></textarea>
-                    
+                </div>
+
+                <div class="form-group">
                     <label for="job_desc">Description:</label>
                     <textarea id="job_desc_input" name="job_desc" required><?php echo htmlspecialchars($job["job_desc"]); ?></textarea>
-                    
-                    <button type="submit">Save Changes</button>
-                    <button type="button" onclick="closeEditForm()">Cancel</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- Delete Modal -->
-        <div id="deleteModal" class="modal">
-            <div class="modal-content">
-                <div class="deletion">
-                    <span class="close" onclick="closeDeleteModal()">&times;</span>
-                    <h2>Are you sure you want to delete this job?</h2>
-                    <button id="confirmDeleteButton">Yes, Delete</button>
-                    <button onclick="closeDeleteModal()">Cancel</button>
                 </div>
+
+                <div class="modal-buttons">
+                    <button type="submit" class="confirm-btn">Save Changes</button>
+                    <button type="button" class="cancel-btn" onclick="closeEditModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <h2>Are you sure you want to delete this job?</h2>
+            <p>This action cannot be undone. The job and all related data will be permanently deleted.</p>
+            <div class="modal-buttons">
+                <button class="confirm-btn" id="confirmDeleteButton">Yes, Delete</button>
+                <button class="cancel-btn" onclick="closeDeleteModal()">Cancel</button>
             </div>
         </div>
+    </div>
 
-        <!-- Apply Modal -->
-        <div id="applyModal" class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="closeApplyModal()">&times;</span>
-                <h2>Apply for Job</h2>
-                <form id="applyForm">
-                    <input type="hidden" name="job_id" value="<?php echo $jobId; ?>">
-                    <label for="applicantName">Name:</label>
-                    <input type="text" id="applicantName" name="name" required>
-                    
-                    <label for="applicantEmail">Email:</label>
-                    <input type="email" id="applicantEmail" name="email" required>
-                    
-                    <label for="applicantMessage">Cover Letter:</label>
-                    <textarea id="applicantMessage" name="message" required></textarea>
-                    
-                    <button type="submit">Submit Application</button>
-                </form>
-            </div>
-        </div>
+    <link rel="stylesheet" href="./styles/job-details.css">
+</main>
 
-    </main>
+<script>
+    // Modal handling
+    function openEditModal() {
+        document.getElementById('editModal').style.display = 'flex';
+    }
 
-    <script>
-        function openEditModal() {
-            document.getElementById('editFormContainer').style.display = 'block';
-        }
+    function closeEditModal() {
+        document.getElementById('editModal').style.display = 'none';
+    }
 
-        function closeEditForm() {
-            document.getElementById('editFormContainer').style.display = 'none';
-        }
+    function openDeleteModal() {
+        document.getElementById('deleteModal').style.display = 'flex';
+    }
 
-        document.getElementById('editForm').addEventListener('submit', function(event) {
-            event.preventDefault(); 
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').style.display = 'none';
+    }
 
-            const formData = new FormData(this);
-            const submitButton = this.querySelector('button[type="submit"]');
-            submitButton.disabled = true;
+    // Form submission for editing
+    document.getElementById('editForm').addEventListener('submit', function(event) {
+        event.preventDefault(); 
 
-            fetch('./database/process/edit-job-details.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                submitButton.disabled = false; 
-                if (data.success) {
-                    document.getElementById('job-title').innerText = formData.get('job_title');
-                    document.getElementById('job-short-desc').innerText = formData.get('job_short_desc');
-                    document.getElementById('job-desc').innerText = formData.get('job_desc');
-                    closeEditForm(); 
-                } else {
-                    alert('Error: ' + data.error); 
-                }
-            })
-            .catch(error => {
-                submitButton.disabled = false; 
-                console.error('Error:', error);
-                alert('An error occurred: ' + error.message);
-            });
+        const formData = new FormData(this);
+        const submitButton = this.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+
+        fetch('./database/process/edit-job-details.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            submitButton.disabled = false;
+            if (data.success) {
+                document.getElementById('job-title').innerText = formData.get('job_title');
+                document.getElementById('job-short-desc').innerText = formData.get('job_short_desc');
+                document.getElementById('job-desc').innerText = formData.get('job_desc');
+                closeEditModal(); 
+            } else {
+                alert('Error: ' + data.error); 
+            }
+        })
+        .catch(error => {
+            submitButton.disabled = false;
+            console.error('Error:', error);
+            alert('An error occurred: ' + error.message);
         });
+    });
 
-        function openDeleteModal() {
-            document.getElementById('deleteModal').style.display = 'block';
-        }
+    // Deletion confirmation
+    document.getElementById('confirmDeleteButton').addEventListener('click', function() {
+        const jobId = <?php echo $jobId; ?>;
 
-        function closeDeleteModal() {
-            document.getElementById('deleteModal').style.display = 'none';
-        }
-
-        document.getElementById('confirmDeleteButton').addEventListener('click', function() {
-            const jobId = <?php echo $jobId; ?>;
-
-            fetch('./database/process/delete-job-details.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ job_id: jobId })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    window.location.href = './index.php?page=job-postings'; 
-                } else {
-                    alert('Error: ' + data.error);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred: ' + error.message);
-            });
+        fetch('./database/process/delete-job-details.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ job_id: jobId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = './index.php?page=job-postings'; 
+            } else {
+                alert('Error: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred: ' + error.message);
         });
-
-        function openApplyModal() {
-            document.getElementById('applyModal').style.display = 'block';
-        }
-
-        function closeApplyModal() {
-            document.getElementById('applyModal').style.display = 'none';
-        }
-
-        document.getElementById('applyForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            const formData = new FormData(this);
-            const submitButton = this.querySelector('button[type="submit"]');
-            submitButton.disabled = true;
-
-            fetch('./database/process/apply-job.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                submitButton.disabled = false;
-                if (data.success) {
-                    alert('Application submitted successfully!');
-                    closeApplyModal();
-                } else {
-                    alert('Error: ' + data.error);
-                }
-            })
-            .catch(error => {
-                submitButton.disabled = false;
-                console.error('Error:', error);
-                alert('An error occurred: ' + error.message);
-            });
-        });
-    </script>
-</body>
-</html>
+    });
+</script>
