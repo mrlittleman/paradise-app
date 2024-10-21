@@ -126,8 +126,6 @@ $conn->close();
         margin-right: 1rem;
     }
 
-
-    /* Animation for modal fade and slide */
     @keyframes fadeIn {
         from {opacity: 0;}
         to {opacity: 1;}
@@ -153,7 +151,7 @@ $conn->close();
         <div class="button-contents">
             <button onclick="openEditModal()">Edit</button>
             <button onclick="openDeleteModal()">Delete</button>
-            <button onclick="openApplyModal()">Apply</button>
+            <button onclick="window.location.href='./index.php?page=apply-job'">Apply</button>
         </div>
     </div>
 

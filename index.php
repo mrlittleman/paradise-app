@@ -16,6 +16,9 @@
                 case 'job-details':
                     include './views/pages/job-details.php';
                     break;
+                case 'job-recruitment':
+                    include './views/pages/job-recruitment.php';
+                    break;
                 case 'apply-job':
                     include './views/pages/job-apply.php';
                     break;

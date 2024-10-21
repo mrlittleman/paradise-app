@@ -27,7 +27,7 @@
                 <div class="dropdown-column">
                     <h3>Recruitment and Onboarding</h3>
                     <a href="./index.php?page=job-postings">Job Postings</a>
-                    <a href="#">Recruitment and Onboarding</a>
+                    <a href="./index.php?page=job-recruitment">Recruitment and Onboarding</a>
                     <a href="#">Employee Documentation</a>
                     <a href="#">Training and Development</a>
                     <a href="#">Analytics and Reporting</a>
